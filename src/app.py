@@ -1,3 +1,8 @@
+'''
+Will be the entry point of the app. Will open camera using cv2 then use mediapipe to get hand mappings
+Given the handmappings call the methods in HandGestures to get gestures and perform task.
+'''
+
 import cv2
 import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
