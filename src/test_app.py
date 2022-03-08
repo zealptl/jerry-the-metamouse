@@ -14,6 +14,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
+#This is a Test
 class HandLandmarks(IntEnum): #Binary Encoding for Hand
     WRIST = 0
     THUMB_CMC = 1
