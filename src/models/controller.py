@@ -55,15 +55,15 @@ class Controller:
         minVol = volRange[0]
         maxVol = volRange[1]
         vol = 0
-        while True:
-            x1, y1 = lmList[4][1], lmList[4][2]
-            x2, y2 = lmList[8][1], lmList[8][2]
+        
+        x1, y1 = lmList[4][1], lmList[4][2]
+        x2, y2 = lmList[8][1], lmList[8][2]
 
-            length = math.hypot(x2 - x1, y2 - y1)
+        length = math.hypot(x2 - x1, y2 - y1)
 
-            vol = np.interp(length, [0, 150], [minVol, maxVol])
-            #print(int(length), vol)
-            volume.SetMasterVolumeLevel(vol, None)
+        vol = np.interp(length, [10, 100], [minVol, maxVol])
+        #print(int(length), vol)
+        volume.SetMasterVolumeLevel(vol, None)
         
     #
     # def scrollVertical():

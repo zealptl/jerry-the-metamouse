@@ -87,7 +87,7 @@ class GestureController:
         right_hand = HandRecog(HLabel.RIGHT)
         left_hand = HandRecog(HLabel.LEFT)
 
-        with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
+        with mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7, min_tracking_confidence=0.7) as hands:
             while GestureController.cap.isOpened() and GestureController.gc_mode:
                 success, image = GestureController.cap.read()
 
