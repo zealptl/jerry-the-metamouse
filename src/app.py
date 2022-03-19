@@ -65,22 +65,22 @@ class GestureController:
         GestureController.right_hand_result = right
         GestureController.left_hand_result = left
 
-    def findPosition(results, img, handNo):
-        xList = []
-        yList = []
-        lmList = []
-        if results.multi_hand_landmarks:
-            myHand = results.multi_hand_landmarks[handNo]
-        for id, lm in enumerate(myHand.landmark):
-            # print(id, lm)
-            h, w, c = img.shape
-            cx, cy = int(lm.x * w), int(lm.y * h)
-            xList.append(cx)
-            yList.append(cy)
-            # print(id, cx, cy)
-            lmList.append([id, cx, cy])
+    # def findPosition(results, img, handNo):
+    #     xList = []
+    #     yList = []
+    #     lmList = []
+    #     if results.multi_hand_landmarks:
+    #         myHand = results.multi_hand_landmarks[handNo]
+    #     for id, lm in enumerate(myHand.landmark):
+    #         # print(id, lm)
+    #         h, w, c = img.shape
+    #         cx, cy = int(lm.x * w), int(lm.y * h)
+    #         xList.append(cx)
+    #         yList.append(cy)
+    #         # print(id, cx, cy)
+    #         lmList.append([id, cx, cy])
         
-        return lmList
+    #     return lmList
         
     def start(self):
 
@@ -117,17 +117,24 @@ class GestureController:
                         right_hand.set_finger_state()
                         gest_name = right_hand.get_gesture()
                         #print(gest_name)
-                        Controller.handle_controls(gest_name, right_hand.hand_result)
-                        lmList = GestureController.findPosition(results, image, 0)
+                        lmList = HandRecog.findPosition(results, image, 0)
+                        Controller.handle_controls(gest_name, right_hand.hand_result, lmList)
                         if len(lmList) != 0:
-                            print(lmList)
+                            
+                            x1, y1 = lmList[4][1], lmList[4][2]
+                            x2, y2 = lmList[8][1], lmList[8][2]
+                            length = math.hypot(x2 - x1, y2 - y1)
+                            print(lmList[4], lmList[8], length, gest_name)
 
                     elif not right_hand.hand_result and left_hand.hand_result:
                         # Do one-handed gesture with left hand
                         left_hand.set_finger_state()
                         gest_name = left_hand.get_gesture()
                         #print(gest_name)
-                        Controller.handle_controls(gest_name, left_hand.hand_result)
+                        lmList = HandRecog.findPosition(results, image, 0)
+                        Controller.handle_controls(gest_name, left_hand.hand_result, lmList)
+                        #if len(lmList) != 0:
+                        #   print(lmList)
                     else:
                         pass
                 else:
