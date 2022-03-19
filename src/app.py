@@ -142,4 +142,4 @@ class GestureController:
 if __name__ == '__main__':
     gc1 = GestureController()
     gc1.start()
->>>>>>> Stashed changes
+
