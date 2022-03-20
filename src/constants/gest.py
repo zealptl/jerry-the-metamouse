@@ -17,4 +17,5 @@ class Gest(IntEnum):
     # Extra Mappings
     V_GEST = 33
     TWO_FINGER_CLOSED = 34
-    PINCH = 36
+    PINCH = 24
+    SPIDER = 25

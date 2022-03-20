@@ -42,7 +42,7 @@ class HandRecog:
         if self.hand_result == None:
             return
 
-        points = [[8, 5, 0], [12, 9, 0], [16, 13, 0], [20, 17, 0]]
+        points = [[4, 1, 0], [8, 5, 0], [12, 9, 0], [16, 13, 0], [20, 17, 0]]
         self.finger = 0
         self.finger = self.finger | 0  # thumb
         for idx, point in enumerate(points):
@@ -71,8 +71,14 @@ class HandRecog:
         #     else:
         #         current_gesture = Gest.PINCH_MAJOR
 
-        if self.get_dist([8,4]) < 5 and Gest.INDEX == self.finger:
+        if self.finger == Gest.PALM:
+            current_gesture = Gest.PALM
+
+        if self.get_dist([8,4]) < 0.3 and self.finger == Gest.PINCH:
             current_gesture = Gest.PINCH
+
+        if self.get_dist([8,4]) < 0.3 and self.finger == Gest.SPIDER:
+            current_gesture = Gest.SPIDER
 
         elif Gest.FIRST2 == self.finger:
             point = [[8, 12], [5, 9]]
