@@ -6,6 +6,9 @@ from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import numpy as np
+import os
+from datetime import datetime
+import time
 
 from models.hand_recog import HandRecog
 
@@ -196,3 +199,11 @@ class Controller:
         #         Controller.pinchmajorflag = True
         #     Controller.pinch_control(hand_result, Controller.changesystembrightness, Controller.changesystemvolume)
 
+    def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results):
+        Controller.flag = True
+        if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
+            desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+            pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
+            print("Screenshot Taken")
+            Controller.flag = False
