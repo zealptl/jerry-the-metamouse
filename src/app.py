@@ -2,6 +2,7 @@
 
 import cv2
 import mediapipe as mp
+from numpy import result_type
 import pyautogui
 import math
 from enum import IntEnum
@@ -118,13 +119,11 @@ class GestureController:
                         left_gest_name = left_hand.get_gesture()
 
                         Controller.two_handle_controls(right_gest_name, left_gest_name, right_hand.hand_result, left_hand.hand_result)
-                        print("Left: ", left_gest_name, "Right: ", right_gest_name)
-                        # lmList = HandRecog.findPosition(results, image, 1)
+                        #print("Left: ", left_gest_name, "Right: ", right_gest_name)
+                        lmList = HandRecog.findPosition(results, image, 1)
+
                         # if len(lmList) != 0:
-                        #     print(lmList[4])
-
-
-
+                        #     print(lmList)
                         pass
                     elif right_hand.hand_result and not left_hand.hand_result:
                         # Do one-handed gesture with right hand
@@ -133,12 +132,21 @@ class GestureController:
                         #print(gest_name)
                         lmList = HandRecog.findPosition(results, image, 0)
                         Controller.handle_controls(gest_name, right_hand.hand_result, lmList)
-                        if len(lmList) != 0:
-                            
-                            x1, y1 = lmList[4][1], lmList[4][2]
-                            x2, y2 = lmList[8][1], lmList[8][2]
-                            length = math.hypot(x2 - x1, y2 - y1)
-                            print(lmList[4], lmList[8], length, gest_name)
+                        
+                        index = results.multi_handedness[0].classification[0].index
+                        for idx, classification in enumerate(results.multi_handedness):
+                            if classification.classification[0].index == index:
+                                label = classification.classification[0].label
+                        
+                        print(label)
+
+                        #if len(lmList) != 0:
+                             #print(lmList)
+                            # x1, y1 = lmList[4][1], lmList[4][2]
+                            # x2, y2 = lmList[8][1], lmList[8][2]
+                            # length = math.hypot(x2 - x1, y2 - y1)
+                            # print(lmList[4], lmList[8], length, gest_name)
+
 
                     elif not right_hand.hand_result and left_hand.hand_result:
                         # Do one-handed gesture with left hand
@@ -147,8 +155,18 @@ class GestureController:
                         #print(gest_name)
                         lmList = HandRecog.findPosition(results, image, 0)
                         Controller.handle_controls(gest_name, left_hand.hand_result, lmList)
-                        #if len(lmList) != 0:
-                        #   print(lmList)
+
+                        
+                        index = results.multi_handedness[0].classification[0].index
+                        for idx, classification in enumerate(results.multi_handedness):
+                            if classification.classification[0].index == index:
+                                label = classification.classification[0].label
+
+                        print(label)
+
+
+                        # if len(lmList) != 0:
+                        #    print(lmList)
                     else:
                         pass
                 else:

@@ -204,6 +204,6 @@ class Controller:
         if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
             desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
             now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-            pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
-            print("Screenshot Taken")
+            #pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
+            #print("Screenshot Taken")
             Controller.flag = False
