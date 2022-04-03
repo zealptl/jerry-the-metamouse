@@ -1,5 +1,6 @@
 import math
 from constants.gest import Gest
+from google.protobuf.json_format import MessageToDict
 
 # Convert Mediapipe Landmarks to recognizable Gestures
 class HandRecog:
@@ -113,6 +114,13 @@ class HandRecog:
         lmList = []
         if results.multi_hand_landmarks:
             myHand = results.multi_hand_landmarks[handNo]
+            myH = results.multi_handedness
+
+            # index = results.multi_handedness[handNo].classification[handNo].index
+            # for id, classification in enumerate(results.multi_handedness):
+            #     if classification.classification[handNo].index == index:
+            #         label = classification.classification[handNo].label
+
         for id, lm in enumerate(myHand.landmark):
             # print(id, lm)
             h, w, c = img.shape
@@ -123,3 +131,35 @@ class HandRecog:
             lmList.append([id, cx, cy])
         
         return lmList
+    
+    def findPosition2Hands(results, img, handNo):
+        leftxList = []
+        leftyList = []
+        leftlmList = []
+
+        rightxList = []
+        rightyList = []
+        rightlmList = []
+
+        if results.multi_hand_landmarks:
+            myHand = results.multi_hand_landmarks[handNo]
+            myH = results.multi_handedness
+
+            if results.multi_handedness:
+                for idx, hand_handedness in enumerate(results.multi_handedness):
+                    handedness_dict = MessageToDict(hand_handedness)
+                    whichhand = hand_handedness.classification[0].label
+                    print(whichhand)
+
+        # for id, lm in enumerate(myHand.landmark):
+        #     # print(id, lm)
+        #     h, w, c = img.shape
+        #     cx, cy = int(lm.x * w), int(lm.y * h)
+        #     xList.append(cx)
+        #     yList.append(cy)
+        #     # print(id, cx, cy)
+        #     lmList.append([id, cx, cy])
+        
+        # return lmList
+    
+    

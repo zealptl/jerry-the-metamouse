@@ -7,7 +7,7 @@ class Gest(IntEnum):
     PINKY = 1
     RING = 2
     MID = 20
-    LAST3 = 7
+    LAST3 = 23
     INDEX = 8
     FIRST2 = 12
     LAST4 = 15
