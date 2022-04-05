@@ -213,3 +213,10 @@ class Controller:
             pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
             print("Screenshot Taken")
             Controller.flag = False
+            timer = 1000
+            while (timer != 0):
+                timer = timer - 1
+           
+                
+
+           
