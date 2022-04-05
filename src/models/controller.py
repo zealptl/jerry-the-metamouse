@@ -1,5 +1,16 @@
 import pyautogui
+import mediapipe as mp
 from constants.gest import Gest
+import math
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import numpy as np
+import os
+from datetime import datetime
+import time
+
+from models.hand_recog import HandRecog
 
 # Executes commands according to detected gestures
 class Controller:
@@ -36,17 +47,27 @@ class Controller:
     #         currentBrightnessLv = 0.0
     #     sbcontrol.fade_brightness(int(100 * currentBrightnessLv), start=sbcontrol.get_brightness())
 
-    # def changesystemvolume():
-    #     devices = AudioUtilities.GetSpeakers()
-    #     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-    #     volume = cast(interface, POINTER(IAudioEndpointVolume))
-    #     currentVolumeLv = volume.GetMasterVolumeLevelScalar()
-    #     currentVolumeLv += Controller.pinchlv / 50.0
-    #     if currentVolumeLv > 1.0:
-    #         currentVolumeLv = 1.0
-    #     elif currentVolumeLv < 0.0:
-    #         currentVolumeLv = 0.0
-    #     volume.SetMasterVolumeLevelScalar(currentVolumeLv, None)
+    def changesystemvolume(lmList):
+
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        # volume.GetMute()
+        # volume.GetMasterVolumeLevel()
+        volRange = volume.GetVolumeRange()
+        minVol = volRange[0]
+        maxVol = volRange[1]
+        vol = 0
+        
+        x1, y1 = lmList[4][1], lmList[4][2]
+        x2, y2 = lmList[8][1], lmList[8][2]
+
+        length = math.hypot(x2 - x1, y2 - y1)
+
+        vol = np.interp(length, [10, 100], [minVol, maxVol])
+        #print(int(length), vol)
+        volume.SetMasterVolumeLevel(vol, None)
+        
     #
     # def scrollVertical():
     #     pyautogui.scroll(120 if Controller.pinchlv > 0.0 else -120)
@@ -123,7 +144,7 @@ class Controller:
                 Controller.prevpinchlv = lvx
                 Controller.framecount = 0
 
-    def handle_controls(gesture, hand_result):
+    def handle_controls(gesture, hand_result, lmList):
         x, y = None, None
         if gesture != Gest.PALM:
             x, y = Controller.get_position(hand_result)
@@ -133,11 +154,11 @@ class Controller:
             Controller.grabflag = False
             pyautogui.mouseUp(button="left")
 
-        if gesture != Gest.PINCH_MAJOR and Controller.pinchmajorflag:
-            Controller.pinchmajorflag = False
+        # if gesture != Gest.PINCH_MAJOR and Controller.pinchmajorflag:
+        #     Controller.pinchmajorflag = False
 
-        if gesture != Gest.PINCH_MINOR and Controller.pinchminorflag:
-            Controller.pinchminorflag = False
+        # if gesture != Gest.PINCH_MINOR and Controller.pinchminorflag:
+        #     Controller.pinchminorflag = False
 
         # implementation
         if gesture == Gest.V_GEST:
@@ -162,15 +183,40 @@ class Controller:
             pyautogui.doubleClick()
             Controller.flag = False
 
-        elif gesture == Gest.PINCH_MINOR:
-            if Controller.pinchminorflag == False:
-                Controller.pinch_control_init(hand_result)
-                Controller.pinchminorflag = True
-            Controller.pinch_control(hand_result, Controller.scrollHorizontal, Controller.scrollVertical)
+        elif gesture == Gest.PINCH:
+            Controller.changesystemvolume(lmList)
+            #Controller.flag = False
 
-        elif gesture == Gest.PINCH_MAJOR:
-            if Controller.pinchmajorflag == False:
-                Controller.pinch_control_init(hand_result)
-                Controller.pinchmajorflag = True
-            Controller.pinch_control(hand_result, Controller.changesystembrightness, Controller.changesystemvolume)
+        elif gesture == Gest.LAST4:
+            pyautogui.scroll(200)
 
+        elif gesture == Gest.LAST3:
+            pyautogui.scroll(-200)
+
+        # elif gesture == Gest.PINCH_MINOR:
+        #     if Controller.pinchminorflag == False:
+        #         Controller.pinch_control_init(hand_result)
+        #         Controller.pinchminorflag = True
+        #     Controller.pinch_control(hand_result, Controller.scrollHorizontal, Controller.scrollVertical)
+
+        # elif gesture == Gest.PINCH_MAJOR:
+        #     if Controller.pinchmajorflag == False:
+        #         Controller.pinch_control_init(hand_result)
+        #         Controller.pinchmajorflag = True
+        #     Controller.pinch_control(hand_result, Controller.changesystembrightness, Controller.changesystemvolume)
+
+    def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results):
+        Controller.flag = True
+        if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
+            desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+            pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
+            print("Screenshot Taken")
+            Controller.flag = False
+            timer = 1000
+            while (timer != 0):
+                timer = timer - 1
+           
+                
+
+           

@@ -6,8 +6,8 @@ class Gest(IntEnum):
     FIST = 0
     PINKY = 1
     RING = 2
-    MID = 4
-    LAST3 = 7
+    MID = 20
+    LAST3 = 23
     INDEX = 8
     FIRST2 = 12
     LAST4 = 15
@@ -15,7 +15,7 @@ class Gest(IntEnum):
     PALM = 31
 
     # Extra Mappings
-    V_GEST = 33
+    V_GEST = 28
     TWO_FINGER_CLOSED = 34
-    PINCH_MAJOR = 35
-    PINCH_MINOR = 36
+    PINCH = 24
+    SPIDER = 25
