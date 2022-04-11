@@ -67,7 +67,32 @@ class Controller:
         vol = np.interp(length, [10, 100], [minVol, maxVol])
         #print(int(length), vol)
         volume.SetMasterVolumeLevel(vol, None)
+    
+    def takeScreenshot(leftlmList, rightlmList):
+
+        x1 = leftlmList[4][1]
+        y1 = leftlmList[4][2]
+
+        x2 = rightlmList[4][1]
+        y2 = rightlmList[4][2]
+
+        x3 = leftlmList[8][1]
+        y3 = leftlmList[8][2]
+
+        x4 = rightlmList[8][1]
+        y4 = rightlmList[8][2]
+
+        thumbDistance = math.hypot(x2 - x1, y2 - y1)
+        indexDistance = math.hypot(x4 - x3, y4 - y3)
         
+        if  math.isclose(thumbDistance, 0, abs_tol = 30):
+            desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+            now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+            pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
+            print("Screenshot Taken")
+        #print ("Thumb: ", thumbDistance, " Index: ", indexDistance)
+        Controller.flag = False
+
     #
     # def scrollVertical():
     #     pyautogui.scroll(120 if Controller.pinchlv > 0.0 else -120)
@@ -205,17 +230,12 @@ class Controller:
         #         Controller.pinchmajorflag = True
         #     Controller.pinch_control(hand_result, Controller.changesystembrightness, Controller.changesystemvolume)
 
-    def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results):
-        Controller.flag = True
+    def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results, leftlmList, rightlmList):
+        if right_gest_name  == Gest.PALM and left_gest_name == Gest.PALM and not Controller.flag:
+            Controller.flag = True
         if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
-            desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-            now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-            pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
-            print("Screenshot Taken")
-            Controller.flag = False
-            timer = 1000
-            while (timer != 0):
-                timer = timer - 1
+            Controller.takeScreenshot(leftlmList, rightlmList)
+            #Controller.flag = False
            
                 
 

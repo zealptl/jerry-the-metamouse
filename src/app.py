@@ -117,13 +117,16 @@ class GestureController:
 
                         left_hand.set_finger_state()
                         left_gest_name = left_hand.get_gesture()
-
-                        Controller.two_handle_controls(right_gest_name, left_gest_name, right_hand.hand_result, left_hand.hand_result)
+                        
+                        leftlmList, rightlmList = HandRecog.findPosition2Hands(results, image, 1)
+                        #Controller.takeScreenshot(leftlmList, rightlmList)
+                        Controller.two_handle_controls(right_gest_name, left_gest_name, right_hand.hand_result, left_hand.hand_result, leftlmList, rightlmList)
                         print("Left: ", left_gest_name, "Right: ", right_gest_name)
-                        lmList = HandRecog.findPosition(results, image, 1)
-                        # if len(lmList) != 0:
-                        #     print(lmList)
-                        pass
+                        # if len(leftlmList) != 0:
+                        #     print("Left: ", leftlmList)
+                        # if len(rightlmList) != 0:
+                        #     print("Right: ", rightlmList)
+                        # pass
                     elif right_hand.hand_result and not left_hand.hand_result:
                         # Do one-handed gesture with right hand
                         right_hand.set_finger_state()
