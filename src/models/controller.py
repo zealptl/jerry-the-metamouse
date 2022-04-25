@@ -9,6 +9,8 @@ import numpy as np
 import os
 from datetime import datetime
 import time
+import win32api
+import win32gui
 
 from models.hand_recog import HandRecog
 
@@ -19,6 +21,7 @@ class Controller:
     trial = True
     flag = False
     grabflag = False
+    mutedflag = False
     pinchmajorflag = False
     pinchminorflag = False
     pinchstartxcoord = None
@@ -29,6 +32,7 @@ class Controller:
     framecount = 0
     prev_hand = None
     pinch_threshold = 0.3
+
 
     def getpinchylv(hand_result):
         dist = round((Controller.pinchstartycoord - hand_result.landmark[8].y) * 10, 1)
@@ -90,8 +94,8 @@ class Controller:
             now = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
             pyautogui.screenshot(desktop + '\\Jerry_Screenshots\\' + now + '.png')
             print("Screenshot Taken")
-        #print ("Thumb: ", thumbDistance, " Index: ", indexDistance)
-        Controller.flag = False
+            #print ("Thumb: ", thumbDistance, " Index: ", indexDistance)
+            Controller.flag = False
 
     #
     # def scrollVertical():
@@ -186,7 +190,18 @@ class Controller:
         #     Controller.pinchminorflag = False
 
         # implementation
+        if gesture == Gest.PALM:
+            Controller.flag = True
+            #if Controller.tabflag:
+            #    pyautogui.keyUp('alt')
+            #    pyautogui.keyUp('tab')
+            #    Controller.tabflag = False
+
         if gesture == Gest.V_GEST:
+            #if Controller.tabflag:
+            #    pyautogui.keyUp('alt')
+            #    pyautogui.keyUp('tab')
+            #    Controller.tabflag = False            
             Controller.flag = True
             pyautogui.moveTo(x, y, duration=0.1)
 
@@ -218,6 +233,22 @@ class Controller:
         elif gesture == Gest.LAST3:
             pyautogui.scroll(-200)
 
+        elif gesture == Gest.PINKY_RING_SPREAD and Controller.flag:
+            pyautogui.hotkey('alt', 'tab')
+            #pyautogui.keyDown('alt')
+            #pyautogui.keyDown('tab')
+            #Controller.tabflag = True
+            Controller.flag = False
+        
+        elif gesture == Gest.PINKY and Controller.flag:
+            pyautogui.hotkey('Delete')
+            Controller.flag = False
+        
+        elif gesture == Gest.FIRST3 and Controller.flag:
+            pyautogui.hotkey('ctrl', 'z')
+            Controller.flag = False
+
+
         # elif gesture == Gest.PINCH_MINOR:
         #     if Controller.pinchminorflag == False:
         #         Controller.pinch_control_init(hand_result)
@@ -233,9 +264,34 @@ class Controller:
     def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results, leftlmList, rightlmList):
         if right_gest_name  == Gest.PALM and left_gest_name == Gest.PALM and not Controller.flag:
             Controller.flag = True
+        
         if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
             Controller.takeScreenshot(leftlmList, rightlmList)
-            #Controller.flag = False
+            Controller.flag = False
+        
+        elif right_gest_name == Gest.PINKY and left_gest_name == Gest.PINKY and Controller.flag:
+            pyautogui.hotkey('alt','f4')
+            Controller.flag = False
+        
+        elif right_gest_name == Gest.FIST and left_gest_name == Gest.FIST and Controller.flag and not Controller.mutedflag:
+            WM_APPCOMMAND = 0x319
+            APPCOMMAND_MICROPHONE_VOLUME_MUTE = 0x180000
+            hwnd_active = win32gui.GetForegroundWindow()
+            win32api.SendMessage(hwnd_active, WM_APPCOMMAND, None, APPCOMMAND_MICROPHONE_VOLUME_MUTE)
+            print("Your Microphone Has Been Muted")
+            Controller.flag = False
+            Controller.mutedflag = True
+
+        elif right_gest_name == Gest.FIST and left_gest_name == Gest.FIST and Controller.flag and Controller.mutedflag:
+            WM_APPCOMMAND = 0x319
+            APPCOMMAND_MICROPHONE_VOLUME_MUTE = 0x180000
+            hwnd_active = win32gui.GetForegroundWindow()
+            win32api.SendMessage(hwnd_active, WM_APPCOMMAND, None, APPCOMMAND_MICROPHONE_VOLUME_MUTE)
+            print("Your Microphone Has Been Unmuted!")
+            Controller.flag = False
+            Controller.mutedflag = False
+
+
            
                 
 
