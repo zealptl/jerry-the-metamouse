@@ -19,3 +19,6 @@ class Gest(IntEnum):
     TWO_FINGER_CLOSED = 34
     PINCH = 24
     SPIDER = 25
+    FIRST3 = 14
+    PINKY_RING_SPREAD = 3
+
