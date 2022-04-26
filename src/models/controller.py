@@ -73,7 +73,6 @@ class Controller:
         volume.SetMasterVolumeLevel(vol, None)
     
     def takeScreenshot(leftlmList, rightlmList):
-
         x1 = leftlmList[4][1]
         y1 = leftlmList[4][2]
 
@@ -273,7 +272,7 @@ class Controller:
             pyautogui.hotkey('alt','f4')
             Controller.flag = False
         
-        elif right_gest_name == Gest.FIST and left_gest_name == Gest.FIST and Controller.flag and not Controller.mutedflag:
+        elif right_gest_name == Gest.SPIDER and left_gest_name == Gest.SPIDER and Controller.flag and not Controller.mutedflag:
             WM_APPCOMMAND = 0x319
             APPCOMMAND_MICROPHONE_VOLUME_MUTE = 0x180000
             hwnd_active = win32gui.GetForegroundWindow()
@@ -282,7 +281,7 @@ class Controller:
             Controller.flag = False
             Controller.mutedflag = True
 
-        elif right_gest_name == Gest.FIST and left_gest_name == Gest.FIST and Controller.flag and Controller.mutedflag:
+        elif right_gest_name == Gest.SPIDER and left_gest_name == Gest.SPIDER and Controller.flag and Controller.mutedflag:
             WM_APPCOMMAND = 0x319
             APPCOMMAND_MICROPHONE_VOLUME_MUTE = 0x180000
             hwnd_active = win32gui.GetForegroundWindow()
