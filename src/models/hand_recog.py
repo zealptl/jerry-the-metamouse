@@ -142,24 +142,36 @@ class HandRecog:
         rightlmList = []
 
         if results.multi_hand_landmarks:
-            myHand = results.multi_hand_landmarks[handNo]
+            myHand1 = results.multi_hand_landmarks[0]
+            myHand2 = results.multi_hand_landmarks[1]
+            #print (myHand)
             myH = results.multi_handedness
+            #print(myH)
 
             if results.multi_handedness:
                 for idx, hand_handedness in enumerate(results.multi_handedness):
                     handedness_dict = MessageToDict(hand_handedness)
                     whichhand = hand_handedness.classification[0].label
-                    print(whichhand)
+                    myHand = results.multi_hand_landmarks[handNo]
+                    if whichhand == "Left":
+                        for id, lm in enumerate(myHand1.landmark):
+                            # print(id, lm)
+                            h, w, c = img.shape
+                            cx, cy = int(lm.x * w), int(lm.y * h)
+                            leftxList.append(cx)
+                            leftyList.append(cy)
+                            # print(id, cx, cy)
+                            leftlmList.append([id, cx, cy])
+                    elif whichhand == "Right":
+                        for id, lm in enumerate(myHand2.landmark):
+                            # print(id, lm)
+                            h, w, c = img.shape
+                            cx, cy = int(lm.x * w), int(lm.y * h)
+                            rightxList.append(cx)
+                            rightyList.append(cy)
+                            # print(id, cx, cy)
+                            rightlmList.append([id, cx, cy])
 
-        # for id, lm in enumerate(myHand.landmark):
-        #     # print(id, lm)
-        #     h, w, c = img.shape
-        #     cx, cy = int(lm.x * w), int(lm.y * h)
-        #     xList.append(cx)
-        #     yList.append(cy)
-        #     # print(id, cx, cy)
-        #     lmList.append([id, cx, cy])
-        
-        # return lmList
+        return leftlmList, rightlmList
     
     
