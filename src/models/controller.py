@@ -1,3 +1,4 @@
+from enum import Flag
 import pyautogui
 import mediapipe as mp
 from constants.gest import Gest
@@ -263,7 +264,7 @@ class Controller:
     def two_handle_controls (right_gest_name, left_gest_name, right_hand_results, left_hand_results, leftlmList, rightlmList):
         if right_gest_name  == Gest.PALM and left_gest_name == Gest.PALM and not Controller.flag:
             Controller.flag = True
-        
+
         if right_gest_name == Gest.PINCH and left_gest_name == Gest.PINCH and Controller.flag:
             Controller.takeScreenshot(leftlmList, rightlmList)
             Controller.flag = False
@@ -289,9 +290,4 @@ class Controller:
             print("Your Microphone Has Been Unmuted!")
             Controller.flag = False
             Controller.mutedflag = False
-
-
-           
-                
-
-           
+            
