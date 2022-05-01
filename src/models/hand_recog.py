@@ -1,5 +1,6 @@
 import math
 from constants.gest import Gest
+from constants.hand_landmarks import HandLandmarks
 from google.protobuf.json_format import MessageToDict
 
 # Convert Mediapipe Landmarks to recognizable Gestures
@@ -101,27 +102,33 @@ class HandRecog:
         if self.finger == Gest.PALM:
             current_gesture = Gest.PALM
 
-        if self.get_dist([8,4]) < 0.3 and self.finger == Gest.PINCH:
+        elif self.get_dist([HandLandmarks.THUMB_TIP,HandLandmarks.INDEX_TIP]) < 0.3 and self.finger == Gest.PINCH:
             current_gesture = Gest.PINCH
 
-        if self.get_dist([8,4]) < 0.3 and self.finger == Gest.SPIDER:
+        elif self.get_dist([HandLandmarks.THUMB_TIP,HandLandmarks.INDEX_TIP]) < 0.3 and self.finger == Gest.SPIDER:
             current_gesture = Gest.SPIDER
 
-        elif Gest.FIRST2 == self.finger:
-            point = [[8, 12], [5, 9]]
+        elif self.finger == Gest.FIRST2:
+            point = [
+                [HandLandmarks.INDEX_TIP, HandLandmarks.MIDDLE_TIP],
+                [HandLandmarks.INDEX_MCP, HandLandmarks.MIDDLE_MCP]
+            ]
             dist1 = self.get_dist(point[0])
             dist2 = self.get_dist(point[1])
             ratio = dist1 / dist2
             if ratio > 1.7:
                 current_gesture = Gest.V_GEST
             else:
-                if self.get_dz([8, 12]) < 0.1:
+                if self.get_dz([HandLandmarks.INDEX_TIP, HandLandmarks.MIDDLE_TIP]) < 0.1:
                     current_gesture = Gest.TWO_FINGER_CLOSED
                 else:
                     current_gesture = Gest.MID
 
         else:
-            current_gesture = self.finger
+            try:
+                current_gesture = Gest(self.finger)
+            except:
+                current_gesture = self.finger
 
         if current_gesture == self.prev_gesture:
             self.frame_count += 1
