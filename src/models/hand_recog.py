@@ -18,11 +18,23 @@ class HandRecog:
 
     def get_hand_result(self):
         return self.hand_result
-
-    def get_signed_dist(self, point):
+    
+    def get_sign_x(self, point):
+        sign = -1
+        if self.hand_result.landmark[point[0]].x < self.hand_result.landmark[point[1]].x:
+            sign = 1
+        
+        return sign
+    
+    def get_sign_y(self, point):
         sign = -1
         if self.hand_result.landmark[point[0]].y < self.hand_result.landmark[point[1]].y:
             sign = 1
+        
+        return sign 
+        
+
+    def get_signed_dist(self, point, sign):
         dist = (self.hand_result.landmark[point[0]].x - self.hand_result.landmark[point[1]].x) ** 2
         dist += (self.hand_result.landmark[point[0]].y - self.hand_result.landmark[point[1]].y) ** 2
         dist = math.sqrt(dist)
@@ -37,24 +49,38 @@ class HandRecog:
     def get_dz(self, point):
         return abs(self.hand_result.landmark[point[0]].z - self.hand_result.landmark[point[1]].z)
 
-    # Function to find Gesture Encoding using current finger_state.
-    # Finger_state: 1 if finger is open, else 0
     def set_finger_state(self):
         if self.hand_result == None:
             return
-
-        points = [[4, 1, 0], [8, 5, 0], [12, 9, 0], [16, 13, 0], [20, 17, 0]]
+        
         self.finger = 0
-        self.finger = self.finger | 0  # thumb
-        for idx, point in enumerate(points):
+        
+        # determine thumb state (thumb in or out)
+        thumb = [4, 5, 0]
+        thumb_sign = self.get_sign_x(thumb)
+        thumb_ratio = round(self.get_signed_dist(thumb[:2], self.get_sign_x(thumb[:2])) /
+                            self.get_signed_dist(thumb[1:], self.get_sign_x(thumb[1:])), 1)
+        self.finger = self.finger << 1
+        if thumb_ratio > 0.3:
+            self.finger = self.finger | 1
+        
+        # determine fingers' state (finge   rs up or down)
+        fingers = [
+            [8, 5, 0], #index
+            [12, 9, 0], # mid
+            [16, 13, 0], # ring
+            [20, 17, 0] # pinky
+        ] 
 
-            dist = self.get_signed_dist(point[:2])
-            dist2 = self.get_signed_dist(point[1:])
+        for idx, point in enumerate(fingers):
+            sign = self.get_sign_y(point)
+            dist = self.get_signed_dist(point[:2], self.get_sign_y(point[:2]))
+            dist2 = self.get_signed_dist(point[1:], self.get_sign_y(point[1:]))
 
             try:
                 ratio = round(dist / dist2, 1)
             except:
-                ratio = round(dist1 / 0.01, 1)
+                ratio = round(dist / 0.01, 1)
 
             self.finger = self.finger << 1
             if ratio > 0.5:
