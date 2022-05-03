@@ -115,7 +115,7 @@ class GestureController:
                         print('right gesture: ', gest_name)
                         
                         lmList = HandRecog.findPosition(results, image, 0)
-                        # Controller.handle_controls(gest_name, right_hand.hand_result, lmList)
+                        Controller.handle_controls(gest_name, right_hand.hand_result, lmList)
 
                     elif not right_hand.hand_result and left_hand.hand_result:
                         # Do one-handed gesture with left hand
