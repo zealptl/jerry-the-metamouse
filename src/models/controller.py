@@ -233,7 +233,7 @@ class Controller:
         elif gesture == Gest.LAST3:
             pyautogui.scroll(-200)
 
-        elif gesture == Gest.PINKY_RING_SPREAD and Controller.flag:
+        elif gesture == Gest.LAST2 and Controller.flag:
             pyautogui.hotkey('alt', 'tab')
             #pyautogui.keyDown('alt')
             #pyautogui.keyDown('tab')
