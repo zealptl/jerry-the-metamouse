@@ -12,6 +12,8 @@ from datetime import datetime
 import time
 import win32api
 import win32gui
+import pyfiglet
+
 
 from models.hand_recog import HandRecog
 
@@ -290,4 +292,9 @@ class Controller:
             print("Your Microphone Has Been Unmuted!")
             Controller.flag = False
             Controller.mutedflag = False
+            
+        elif right_gest_name == Gest.MID and left_gest_name == Gest.MID:
+            ascii_banner = pyfiglet.figlet_format("FUCK YOU!!")
+            print(ascii_banner)
+            exit()
             
