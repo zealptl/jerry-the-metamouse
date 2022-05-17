@@ -294,7 +294,7 @@ class Controller:
             Controller.mutedflag = False
             
         elif right_gest_name == Gest.MID and left_gest_name == Gest.MID:
-            ascii_banner = pyfiglet.figlet_format("FUCK YOU!!")
+            ascii_banner = pyfiglet.figlet_format("Class of 2022!!")
             print(ascii_banner)
             exit()
             
